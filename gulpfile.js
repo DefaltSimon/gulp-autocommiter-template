@@ -12,13 +12,6 @@ const paths = {
     src: './assets/'
 };
 
-// Clean
-gulp.task('clean', require('del').bind(null, [paths.dist]));
-
-function safeQuote(str) {
-    return str.replace(/["']/g, "")
-}
-
 const gitConfig = {
     // In seconds
     min_time_between_commits: 60 * 5,
@@ -27,6 +20,10 @@ const gitConfig = {
     // Only autocommit files from that directory
     file_whitelist: "assets/"
 };
+
+function safeQuote(str) {
+    return str.replace(/["']/g, "")
+}
 
 function getShortFilename(fn) {
     // Works with filenames with multiple dots
@@ -163,8 +160,10 @@ gulp.task("autocommit", function () {
     commitChangedFiles(false)
 });
 
+// Clean
+gulp.task('clean', require('del').bind(null, [paths.dist]));
 
-// Gulp Build - Same as Default, but with a clean up beforehand
+// The default task
 gulp.task('default', function() {
     runSequence(
         "git-add",
@@ -173,7 +172,7 @@ gulp.task('default', function() {
         'watch');
 });
 
-// Example task
+// Example task with html
 gulp.task('html', function() {
     return gulp.src([paths.src + 'templates/*.html'])
         .pipe(gulp.dest(paths.dist));
@@ -181,9 +180,11 @@ gulp.task('html', function() {
 
 // Watches for changes in folders, then triggers gulp tasks
 gulp.task('watch', function() {
+    // Example watch
     gulp.watch('./assets/templates/**/*', ['html']);
     // Set stuff up for other folders
     // ...
+
     // then
     gulp.watch("./assets/**/*", ["autocommit"])
 });
